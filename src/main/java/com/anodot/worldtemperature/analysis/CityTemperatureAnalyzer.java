@@ -7,6 +7,7 @@ import com.anodot.worldtemperature.model.DailyTemp;
 import com.anodot.worldtemperature.util.PropertiesLoader;
 import lombok.extern.slf4j.Slf4j;
 
+import java.text.DecimalFormat;
 import java.util.Set;
 import java.util.List;
 
@@ -24,6 +25,8 @@ public class CityTemperatureAnalyzer {
 
     private int populationThreshold;
     private int numberOfTopCities;
+
+    private final DecimalFormat df = new DecimalFormat("#.#");
 
     public CityTemperatureAnalyzer(WeatherAPI weatherAPI) {
         this.weatherAPI = weatherAPI;
@@ -106,6 +109,7 @@ public class CityTemperatureAnalyzer {
                 temperatureData.put(result.getKey(), result.getValue());
             } catch (InterruptedException | ExecutionException e) {
                 // If an exception occurs while executing the asynchronous task, log an error and throw a RuntimeException
+                executor.shutdown();
                 log.error("Failed to execute fetch task {}", e.getMessage());
                 throw new RuntimeException(e);
             }
@@ -138,6 +142,7 @@ public class CityTemperatureAnalyzer {
 
             // Store the aggregated temperature for the city in the map
             aggregatedTemperatures.put(city, aggregatedTemperature);
+            log.info("Calculated for {} -> temperature {}", city.getName(), df.format(aggregatedTemperature));
         }
 
         // Return the map containing the aggregated temperatures for each city
@@ -169,6 +174,9 @@ public class CityTemperatureAnalyzer {
             topCities.add(sortedCities.get(i).getKey());
         }
 
+        // Shutdown the executor when done
+        executor.shutdown();
+
         // Return the list of top cities
         return topCities;
     }
@@ -179,8 +187,8 @@ public class CityTemperatureAnalyzer {
     private void loadProperties() {
         Properties properties = PropertiesLoader.loadProperties();
         populationThreshold = Integer.parseInt(properties.getProperty("population.threshold", "50000"));
-        log.info("loaded populationThreshold {}", populationThreshold);
+        log.debug("loaded populationThreshold {}", populationThreshold);
         numberOfTopCities = Integer.parseInt(properties.getProperty("number.of.top.cities", "3"));
-        log.info("loaded numberOfTopCities {}", numberOfTopCities);
+        log.debug("loaded numberOfTopCities {}", numberOfTopCities);
     }
 }

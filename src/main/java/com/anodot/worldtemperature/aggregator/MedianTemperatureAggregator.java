@@ -34,7 +34,6 @@ public class MedianTemperatureAggregator implements TemperatureAggregator {
             result = temperatures.get(size/2).getTemperature();
         }
 
-        log.info("Temperatures' median is {}", result);
         return result;
     }
 }

@@ -20,7 +20,6 @@ public class MaxTemperatureAggregator implements TemperatureAggregator {
         for (DailyTemp temp : temperatures) {
             maxTemp = Math.max(maxTemp, temp.getTemperature());
         }
-        log.info("Temperatures' maximum is {}", maxTemp);
         return maxTemp;
     }
 }

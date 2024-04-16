@@ -2,8 +2,8 @@ package com.anodot.worldtemperature.util;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 @Slf4j
@@ -16,14 +16,11 @@ public class PropertiesLoader {
     }
 
     public static Properties loadProperties() {
-        log.info("Loading properties from '{}' file", APPLICATION_PROPERTIES_FILE);
-        return loadProperties(APPLICATION_PROPERTIES_FILE);
-    }
-
-    public static Properties loadProperties(String filePath) {
         Properties properties = new Properties();
         try {
-            properties.load(new FileInputStream(filePath));
+            log.info("Loading properties from '{}' file", APPLICATION_PROPERTIES_FILE);
+            InputStream input = PropertiesLoader.class.getClassLoader().getResourceAsStream(APPLICATION_PROPERTIES_FILE);
+            properties.load(input);
         } catch (IOException e) {
             log.error("Failed to load properties {}", e.getMessage());
             throw new RuntimeException(e);

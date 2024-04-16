@@ -21,7 +21,6 @@ public class AverageTemperatureAggregator implements TemperatureAggregator {
             sum += temp.getTemperature();
         }
         double average = sum / temperatures.size();
-        log.info("Temperatures average is {}", average);
         return average;
     }
 }
