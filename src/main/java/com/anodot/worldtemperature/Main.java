@@ -1,6 +1,6 @@
 package com.anodot.worldtemperature;
 
-import com.anodot.worldtemperature.api.DemoWeatherAPI;
+import com.anodot.worldtemperature.examples.SimpleWeatherAPI;
 import com.anodot.worldtemperature.api.WeatherAPI;
 import com.anodot.worldtemperature.model.City;
 import com.anodot.worldtemperature.model.DailyTemp;
@@ -14,8 +14,13 @@ import java.util.Set;
 @Slf4j
 public class Main {
     public static void main(String[] args) {
+        Main main = new Main();
+        main.simpleWeatherApiRunner();
+    }
 
-        WeatherAPI weatherAPI = new DemoWeatherAPI();
+    private void simpleWeatherApiRunner() {
+
+        WeatherAPI weatherAPI = new SimpleWeatherAPI();
 
         // Example: Retrieve city data by IDs
         Set<String> cityIds = new HashSet<>(Arrays.asList("TLV", "NY"));

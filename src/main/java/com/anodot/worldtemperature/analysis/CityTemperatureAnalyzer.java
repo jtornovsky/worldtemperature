@@ -46,19 +46,29 @@ public class CityTemperatureAnalyzer {
     }
 
     /**
-     * Filters cities by population threshold.
+     * Filters cities based on their population using the specified population threshold.
      *
-     * @param cityIds The set of city IDs.
-     * @return The list of filtered cities.
+     * @param cityIds The set of city IDs to filter.
+     * @return A list containing the filtered cities.
      */
     private List<City> filterCitiesByPopulation(Set<String> cityIds) {
+
+        // Retrieve the set of cities corresponding to the given city IDs from the WeatherAPI
         Set<City> cities = weatherAPI.getAllCitiesByIds(cityIds);
+
+        // Initialize a list to store the filtered cities
         List<City> filteredCities = new ArrayList<>();
+
+        // Iterate through each city
         for (City city : cities) {
+            // Check if the city's population meets or exceeds the specified threshold
             if (city.getPopulation() >= populationThreshold) {
+                // If the population meets the threshold, add the city to the filtered list
                 filteredCities.add(city);
             }
         }
+
+        // Return the list of filtered cities
         return filteredCities;
     }
 
@@ -105,22 +115,32 @@ public class CityTemperatureAnalyzer {
         return temperatureData;
     }
 
-
     /**
-     * Aggregates temperature data for each city.
+     * Aggregates temperature data for each city using the specified temperature aggregator.
      *
      * @param temperatureData The map of cities to their temperature data.
-     * @param aggregator      The temperature aggregator.
-     * @return The map of cities to their aggregated temperatures.
+     * @param aggregator      The temperature aggregator used for aggregation.
+     * @return A map containing the aggregated temperatures for each city.
      */
     private Map<City, Double> aggregateTemperatures(Map<City, List<DailyTemp>> temperatureData, TemperatureAggregator aggregator) {
+
+        // a map to store the aggregated temperatures for each city
         Map<City, Double> aggregatedTemperatures = new HashMap<>();
+
+        // Iterate through each city's temperature data
         for (Map.Entry<City, List<DailyTemp>> entry : temperatureData.entrySet()) {
+            // Get the city and its corresponding temperature data
             City city = entry.getKey();
             List<DailyTemp> temperatures = entry.getValue();
+
+            // Aggregate the temperatures for the city using the specified aggregator
             double aggregatedTemperature = aggregator.aggregate(temperatures);
+
+            // Store the aggregated temperature for the city in the map
             aggregatedTemperatures.put(city, aggregatedTemperature);
         }
+
+        // Return the map containing the aggregated temperatures for each city
         return aggregatedTemperatures;
     }
 
@@ -159,6 +179,8 @@ public class CityTemperatureAnalyzer {
     private void loadProperties() {
         Properties properties = PropertiesLoader.loadProperties();
         populationThreshold = Integer.parseInt(properties.getProperty("population.threshold", "50000"));
+        log.info("loaded populationThreshold {}", populationThreshold);
         numberOfTopCities = Integer.parseInt(properties.getProperty("number.of.top.cities", "3"));
+        log.info("loaded numberOfTopCities {}", numberOfTopCities);
     }
 }

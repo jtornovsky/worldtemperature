@@ -1,16 +1,17 @@
-package com.anodot.worldtemperature.api;
+package com.anodot.worldtemperature.examples;
 
+import com.anodot.worldtemperature.api.WeatherAPI;
 import com.anodot.worldtemperature.model.City;
 import com.anodot.worldtemperature.model.DailyTemp;
 
 import java.util.*;
 
-public class DemoWeatherAPI implements WeatherAPI {
+public class SimpleWeatherAPI implements WeatherAPI {
 
     private Map<String, City> cityData;
     private Map<String, List<DailyTemp>> temperatureData;
 
-    public DemoWeatherAPI() {
+    public SimpleWeatherAPI() {
         // Initialize demo data
         cityData = new HashMap<>();
         cityData.put("TLV", new City("TLV", "Tel Aviv", 1000000));
