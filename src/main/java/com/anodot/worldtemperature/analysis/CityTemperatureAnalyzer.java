@@ -22,8 +22,8 @@ import java.util.concurrent.*;
 public class CityTemperatureAnalyzer {
 
     private static final int THREAD_POOL_SIZE = 5;
-    private static final int CACHE_SIZE = 100;
-    private static final int CACHE_TTL_IN_SECONDS = 1;
+    private static final int CACHE_SIZE = 10000;
+    private static final int CACHE_TTL_IN_SECONDS = 3600;   // keep entry 1 hour
 
     private final WeatherAPI weatherAPI;
     private final ExecutorService executor;

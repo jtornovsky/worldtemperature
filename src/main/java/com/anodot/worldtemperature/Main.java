@@ -13,8 +13,8 @@ public class Main {
         final SmallCityWeatherApiCalculator smallCityWeatherApiCalculator = new SmallCityWeatherApiCalculator();
         final BigDataWeatherApiCalculator bigDataWeatherApiCalculator = new BigDataWeatherApiCalculator();
 
-//        simpleWeatherApiCalculator.simpleWeatherApiAllTempMetricsCalculator();
-//        smallCityWeatherApiCalculator.smallCityWeatherApiAllTempMetricsCalculator();
+        simpleWeatherApiCalculator.simpleWeatherApiAllTempMetricsCalculator();
+        smallCityWeatherApiCalculator.smallCityWeatherApiAllTempMetricsCalculator();
         bigDataWeatherApiCalculator.bigdataWeatherApiAllTempMetricsCalculator();
     }
 }

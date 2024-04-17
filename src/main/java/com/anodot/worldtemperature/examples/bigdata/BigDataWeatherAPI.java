@@ -10,7 +10,8 @@ import java.util.*;
 import static com.anodot.worldtemperature.util.StringUtils.generateRandomString;
 
 /**
- *
+ * A big data implementation of the {@link WeatherAPI} interface, providing mock of big weather data.
+ * This implementation generates data for a set of predefined cities and their corresponding temperature records.
  */
 class BigDataWeatherAPI extends BaseWeatherAPI implements WeatherAPI {
 
@@ -38,7 +39,7 @@ class BigDataWeatherAPI extends BaseWeatherAPI implements WeatherAPI {
     protected void generateData() {
 
         // Define the number of cities to generate
-        int numCities = 10000;
+        int numCities = 100000;
         int numOfTemperatures = 365;
 
         // Generate random city data

@@ -72,7 +72,7 @@ public class LRUCache<K, V> {
     public void put(K key, V value) {
         lock.lock(); // Acquire the lock
         try {
-            CacheEntry cacheEntry = new CacheEntry<>(value, ttlMillis);
+            CacheEntry<V> cacheEntry = new CacheEntry<>(value, ttlMillis);
             cache.put(key, cacheEntry);
             log.debug("Cache populated with key {}", key);
         } finally {
@@ -107,7 +107,10 @@ public class LRUCache<K, V> {
         };
     }
 
-    // Inner class representing cache entries with expiration time
+    /**
+     * class representing cache entries with expiration time
+     * @param <V>
+     */
     private static class CacheEntry<V> {
         @Getter
         private final V value;
