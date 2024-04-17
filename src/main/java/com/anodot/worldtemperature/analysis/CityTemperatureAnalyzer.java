@@ -9,9 +9,6 @@ import com.anodot.worldtemperature.util.PropertiesLoader;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.DecimalFormat;
-import java.util.Set;
-import java.util.List;
-
 import java.util.*;
 import java.util.concurrent.*;
 
