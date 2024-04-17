@@ -4,6 +4,7 @@ import com.anodot.worldtemperature.aggregator.TemperatureAggregator;
 import com.anodot.worldtemperature.api.WeatherAPI;
 import com.anodot.worldtemperature.model.City;
 import com.anodot.worldtemperature.model.DailyTemp;
+import com.anodot.worldtemperature.util.LRUCache;
 import com.anodot.worldtemperature.util.PropertiesLoader;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,8 +21,13 @@ import java.util.concurrent.*;
 @Slf4j
 public class CityTemperatureAnalyzer {
 
+    private static final int THREAD_POOL_SIZE = 5;
+    private static final int CACHE_SIZE = 1000;
+    private static final int CACHE_TTL_IN_SECONDS = 1000;
+
     private final WeatherAPI weatherAPI;
     private final ExecutorService executor;
+    private final LRUCache<String, List<DailyTemp>> temperatureCache;
 
     private int populationThreshold;
     private int numberOfTopCities;
@@ -30,7 +36,8 @@ public class CityTemperatureAnalyzer {
 
     public CityTemperatureAnalyzer(WeatherAPI weatherAPI) {
         this.weatherAPI = weatherAPI;
-        this.executor = Executors.newFixedThreadPool(5); // Use a fixed-size thread pool
+        this.executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE); // Use a fixed-size thread pool
+        this.temperatureCache = new LRUCache<>(CACHE_SIZE, CACHE_TTL_IN_SECONDS);
         loadProperties();
     }
 
@@ -82,22 +89,34 @@ public class CityTemperatureAnalyzer {
      * @return A map containing the fetched temperature data for each city.
      */
     private Map<City, List<DailyTemp>> fetchTemperatures(List<City> cities) {
+
         // map to store the temperature data for each city
         Map<City, List<DailyTemp>> temperatureData = new HashMap<>();
 
         // list to store the Future objects representing asynchronous temperature fetching tasks
         List<Future<Map.Entry<City, List<DailyTemp>>>> futures = new ArrayList<>();
 
-        // Submit asynchronous tasks for fetching temperature data for each city
         for (City city : cities) {
-            Future<Map.Entry<City, List<DailyTemp>>> future = executor.submit(() -> {
-                // Inside the asynchronous task, fetch the temperature data for the city from the WeatherAPI
-                List<DailyTemp> temperatures = weatherAPI.getLastYearTemperature(city.getId());
-                // Create a map entry containing the city and its fetched temperature data
-                return Map.entry(city, temperatures);
-            });
-            // Add the Future object representing the asynchronous task to the list
-            futures.add(future);
+
+            String cityId = city.getId();
+            List<DailyTemp> cachedTemperatures = temperatureCache.get(cityId);
+
+            if (cachedTemperatures != null) {
+                log.debug("The temperature data for city {} found in cache, not fetching it from outside.", city.getName());
+                temperatureData.put(city, cachedTemperatures);
+            } else {
+                // Submit asynchronous task to fetch temperatures from the API
+                Future<Map.Entry<City, List<DailyTemp>>> future = executor.submit(() -> {
+                    // Inside the asynchronous task, fetch the temperature data for the city from the WeatherAPI
+                    List<DailyTemp> temperatures = weatherAPI.getLastYearTemperature(city.getId());
+                    // Cache the fetched temperature data
+                    temperatureCache.put(cityId, temperatures);
+                    // Create a map entry containing the city and its fetched temperature data
+                    return Map.entry(city, temperatures);
+                });
+                // Add the Future object representing the asynchronous task to the list
+                futures.add(future);
+            }
         }
 
         // Wait for all asynchronous tasks to complete and collect their results
