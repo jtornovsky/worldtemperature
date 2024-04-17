@@ -75,6 +75,8 @@ public class CityTemperatureAnalyzer {
             if (city.getPopulation() >= populationThreshold) {
                 // If the population meets the threshold, add the city to the filtered list
                 filteredCities.add(city);
+            } else {
+                log.info("the '{}' city's temperatures won't be calculated due to its population {} is under the threshold of {}.", city.getName(), city.getPopulation(), populationThreshold);
             }
         }
 

@@ -7,21 +7,19 @@ import com.anodot.worldtemperature.model.DailyTemp;
 
 import java.util.*;
 
-public class SimpleWeatherAPI extends BaseWeatherAPI implements WeatherAPI {
+/**
+ * A simple implementation of the {@link WeatherAPI} interface, providing mock weather data for demonstration purposes.
+ * This implementation generates data for a set of predefined cities and their corresponding temperature records.
+ */
+class SimpleWeatherAPI extends BaseWeatherAPI implements WeatherAPI {
 
-    public SimpleWeatherAPI() {
+    SimpleWeatherAPI() {
         generateData();
     }
 
     @Override
     public Set<City> getAllCitiesByIds(Set<String> cityIds) {
-        Set<City> cities = new HashSet<>();
-        for (String cityId : cityIds) {
-            if (cityData.containsKey(cityId)) {
-                cities.add(cityData.get(cityId));
-            }
-        }
-        return cities;
+        return super.getAllCitiesByIds(cityIds);
     }
 
     @Override
@@ -54,10 +52,10 @@ public class SimpleWeatherAPI extends BaseWeatherAPI implements WeatherAPI {
         cityData.put("RIO", new City("RIO", "Rio de Janeiro", 6700000));
         cityData.put("MEX", new  City("MEX", "Mexico City", 21000000));
         cityData.put("CAI", new City("CAI", "Cairo", 20000000));
-        cityData.put("SAO", new City("SAO", "São Paulo", 12000000));
+        cityData.put("SAO", new City("SAO", "Sao Paulo", 12000000));
         cityData.put("LIM", new City("LIM", "Lima", 10000000));
 
-        // Loop through each city and add 30 DailyTemp entries
+        // Loop through each city and add 50 DailyTemp entries
         for (String cityCode : cityData.keySet()) {
             List<DailyTemp> dailyTemps = new ArrayList<>();
             // Generate random temperatures for 50 days

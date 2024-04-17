@@ -1,14 +1,17 @@
 package com.anodot.worldtemperature;
 
 import com.anodot.worldtemperature.examples.simple.SimpleWeatherApiCalculator;
+import com.anodot.worldtemperature.examples.smallcity.SmallCityWeatherApiCalculator;
 
 
 public class Main {
 
-    private SimpleWeatherApiCalculator simpleWeatherApiCalculator = new SimpleWeatherApiCalculator();
+    private final SimpleWeatherApiCalculator simpleWeatherApiCalculator = new SimpleWeatherApiCalculator();
+    private final SmallCityWeatherApiCalculator smallCityWeatherApiCalculator = new SmallCityWeatherApiCalculator();
 
     public static void main(String[] args) {
         Main main = new Main();
-        main.simpleWeatherApiCalculator.simpleWeatherApiWithAverageTempCalculator();
+//        main.simpleWeatherApiCalculator.simpleWeatherApiAllTempMetricsCalculator();
+        main.smallCityWeatherApiCalculator.smallCityWeatherApiAllTempMetricsCalculator();
     }
 }

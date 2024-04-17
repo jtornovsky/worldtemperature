@@ -47,11 +47,15 @@ public class LRUCache<K, V> {
         try {
             CacheEntry<V> entry = cache.get(key);
             if (entry != null && !entry.isExpired()) {
-                log.debug("returned cache with key {} -> value {}", key, entry.getValue());
+                log.debug("returned cache with key {}.", key);
                 return entry.getValue();
             } else {
-                log.debug("cached key removed due to expiration {}", key);
-                cache.remove(key);
+                if (entry == null) {
+                    log.debug("the key {} is not in cache, nothing to return.", key);
+                } else if (entry.isExpired()) {
+                    log.debug("cached key {} removed due to expiration, nothing to return.", key);
+                    cache.remove(key);
+                }
                 return null;
             }
         } finally {
@@ -70,7 +74,7 @@ public class LRUCache<K, V> {
         try {
             CacheEntry cacheEntry = new CacheEntry<>(value, ttlMillis);
             cache.put(key, cacheEntry);
-            log.debug("Cache populated with key {} -> value {}", key, cacheEntry.getValue());
+            log.debug("Cache populated with key {}", key);
         } finally {
             lock.unlock(); // Release the lock
         }

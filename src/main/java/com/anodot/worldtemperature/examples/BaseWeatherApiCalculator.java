@@ -15,7 +15,7 @@ import java.util.Properties;
 import java.util.Set;
 
 @Slf4j
-abstract public class BaseWeatherApiCalculator {
+public abstract class BaseWeatherApiCalculator {
 
     protected final WeatherAPI weatherAPI;
     protected int numberOfTopCities;
@@ -25,9 +25,9 @@ abstract public class BaseWeatherApiCalculator {
         loadProperties();
     }
 
-    abstract protected Set<String> getCityIds();
+    protected abstract Set<String> getCityIds();
 
-    protected void simpleWeatherApiCalculator(TemperatureAggregatorType aggregationType) {
+    protected void weatherApiCalculator(TemperatureAggregatorType aggregationType) {
 
         // Example: Retrieve city data by IDs
         Set<String> cityIds = this.getCityIds();
