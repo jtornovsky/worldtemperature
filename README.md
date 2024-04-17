@@ -23,7 +23,7 @@ Before running this project, ensure you have the following prerequisites install
 To use the World Temperature Analysis project, follow these steps:
 
 1. Configure the project properties by editing the `application.properties` file.
-2. Run the 'Main' application class to start the analysis process
+2. Run the 'Main' application class to start the analysis process. Comment/Uncomment desired modules for running.
 
 
 ## Configuration
