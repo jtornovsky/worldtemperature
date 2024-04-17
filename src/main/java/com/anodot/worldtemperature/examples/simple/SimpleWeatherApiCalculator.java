@@ -2,11 +2,9 @@ package com.anodot.worldtemperature.examples.simple;
 
 import com.anodot.worldtemperature.aggregator.TemperatureAggregatorType;
 import com.anodot.worldtemperature.examples.BaseWeatherApiCalculator;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
 
-@Slf4j
 public class SimpleWeatherApiCalculator extends BaseWeatherApiCalculator {
 
     public SimpleWeatherApiCalculator() {
@@ -17,17 +15,18 @@ public class SimpleWeatherApiCalculator extends BaseWeatherApiCalculator {
         simpleWeatherApiWithAverageTempCalculator();
         simpleWeatherApiWithMaxTempCalculator();
         simpleWeatherApiWithMedianTempCalculator();
+        closeApplication();
     }
 
-    public void simpleWeatherApiWithAverageTempCalculator() {
+    private void simpleWeatherApiWithAverageTempCalculator() {
         weatherApiCalculator(TemperatureAggregatorType.AVERAGE);
     }
 
-    public void simpleWeatherApiWithMaxTempCalculator() {
+    private void simpleWeatherApiWithMaxTempCalculator() {
         weatherApiCalculator(TemperatureAggregatorType.MAX);
     }
 
-    public void simpleWeatherApiWithMedianTempCalculator() {
+    private void simpleWeatherApiWithMedianTempCalculator() {
         weatherApiCalculator(TemperatureAggregatorType.MEDIAN);
     }
 

@@ -18,10 +18,14 @@ import java.util.Set;
 public abstract class BaseWeatherApiCalculator {
 
     protected final WeatherAPI weatherAPI;
+    private final CityTemperatureAnalyzer analyzer;
+
     protected int numberOfTopCities;
 
     protected BaseWeatherApiCalculator(WeatherAPI weatherAPI) {
         this.weatherAPI = weatherAPI;
+        // Create CityTemperatureAnalyzer instance
+        analyzer = new CityTemperatureAnalyzer(this.weatherAPI);
         loadProperties();
     }
 
@@ -32,9 +36,6 @@ public abstract class BaseWeatherApiCalculator {
         // Example: Retrieve city data by IDs
         Set<String> cityIds = this.getCityIds();
 //        printGeneratedData(weatherAPI, cityIds);  // uncomment to see seeded data
-
-        // Create CityTemperatureAnalyzer instance
-        CityTemperatureAnalyzer analyzer = new CityTemperatureAnalyzer(weatherAPI);
 
         // Get appropriate temperature aggregator based on aggregation type
         TemperatureAggregator aggregator = TemperatureAggregatorFactory.createTemperatureAggregator(aggregationType);
@@ -48,6 +49,11 @@ public abstract class BaseWeatherApiCalculator {
             City city = topCities.get(i);
             log.info(city.getName());
         }
+    }
+
+    protected void closeApplication() {
+        log.info("Application ended.");
+        analyzer.close();
     }
 
     private void printGeneratedData(WeatherAPI weatherAPI, Set<String> cityIds) {

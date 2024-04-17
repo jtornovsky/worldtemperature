@@ -33,6 +33,9 @@ class SimpleWeatherAPI extends BaseWeatherAPI implements WeatherAPI {
 
     @Override
     protected void generateData() {
+
+        final int numOfTemperatures = 50;
+
         // Add 20 cities with names and populations
         cityData.put("TLV", new City("TLV", "Tel Aviv", 1000000));
         cityData.put("NY", new City("NY", "New York", 8000000));
@@ -59,7 +62,7 @@ class SimpleWeatherAPI extends BaseWeatherAPI implements WeatherAPI {
         for (String cityCode : cityData.keySet()) {
             List<DailyTemp> dailyTemps = new ArrayList<>();
             // Generate random temperatures for 50 days
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < numOfTemperatures; i++) {
                 double randomTemp = Math.random() * 40 + 1; // Generate random temp between 1 and 41
                 dailyTemps.add(new DailyTemp(new Date(), randomTemp));
             }

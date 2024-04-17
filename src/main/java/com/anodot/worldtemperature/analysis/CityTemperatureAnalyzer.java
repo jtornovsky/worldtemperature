@@ -22,8 +22,8 @@ import java.util.concurrent.*;
 public class CityTemperatureAnalyzer {
 
     private static final int THREAD_POOL_SIZE = 5;
-    private static final int CACHE_SIZE = 1000;
-    private static final int CACHE_TTL_IN_SECONDS = 1000;
+    private static final int CACHE_SIZE = 100;
+    private static final int CACHE_TTL_IN_SECONDS = 1;
 
     private final WeatherAPI weatherAPI;
     private final ExecutorService executor;
@@ -53,6 +53,10 @@ public class CityTemperatureAnalyzer {
         Map<City, List<DailyTemp>> temperatureData = fetchTemperatures(filteredCities);
         Map<City, Double> aggregatedTemperatures = aggregateTemperatures(temperatureData, aggregator);
         return getTopCities(aggregatedTemperatures);
+    }
+
+    public void close() {
+        shutdown();
     }
 
     /**
@@ -110,17 +114,23 @@ public class CityTemperatureAnalyzer {
                 temperatureData.put(city, cachedTemperatures);
             } else {
                 // Submit asynchronous task to fetch temperatures from the API
-                Future<Map.Entry<City, List<DailyTemp>>> future = executor.submit(() -> {
-                    // Inside the asynchronous task, fetch the temperature data for the city from the WeatherAPI
-                    List<DailyTemp> temperatures = weatherAPI.getLastYearTemperature(city.getId());
-                    // Cache the fetched temperature data
-                    temperatureCache.put(cityId, temperatures);
-                    log.debug("The temperature data for city {} isn't in cache, fetching it.", city.getName());
-                    // Create a map entry containing the city and its fetched temperature data
-                    return Map.entry(city, temperatures);
-                });
-                // Add the Future object representing the asynchronous task to the list
-                futures.add(future);
+                try {
+                    Future<Map.Entry<City, List<DailyTemp>>> future = executor.submit(() -> {
+                        // Inside the asynchronous task, fetch the temperature data for the city from the WeatherAPI
+                        List<DailyTemp> temperatures = weatherAPI.getLastYearTemperature(city.getId());
+                        // Cache the fetched temperature data
+                        temperatureCache.put(cityId, temperatures);
+                        log.debug("The temperature data for city {} isn't in cache, fetching it.", city.getName());
+                        // Create a map entry containing the city and its fetched temperature data
+                        return Map.entry(city, temperatures);
+                    });
+                    // Add the Future object representing the asynchronous task to the list
+                    futures.add(future);
+                } catch (Exception e) {
+                    shutdown();
+                    log.error("Failed to fetch temperature data for city {}: {}", city.getName(), e.getMessage());
+                    throw new RuntimeException(e);
+                }
             }
         }
 
@@ -133,7 +143,7 @@ public class CityTemperatureAnalyzer {
                 temperatureData.put(result.getKey(), result.getValue());
             } catch (InterruptedException | ExecutionException e) {
                 // If an exception occurs while executing the asynchronous task, log an error and throw a RuntimeException
-                executor.shutdown();
+                shutdown();
                 log.error("Failed to execute fetch task {}", e.getMessage());
                 throw new RuntimeException(e);
             }
@@ -198,9 +208,6 @@ public class CityTemperatureAnalyzer {
             topCities.add(sortedCities.get(i).getKey());
         }
 
-        // Shutdown the executor when done
-        executor.shutdown();
-
         // Return the list of top cities
         return topCities;
     }
@@ -214,5 +221,24 @@ public class CityTemperatureAnalyzer {
         log.debug("loaded populationThreshold {}", populationThreshold);
         numberOfTopCities = Integer.parseInt(properties.getProperty("number.of.top.cities", "3"));
         log.debug("loaded numberOfTopCities {}", numberOfTopCities);
+    }
+
+    /**
+     * shutdowns executor gracefully
+     */
+    private void shutdown() {
+        // Attempt to gracefully shut down the executor service
+        executor.shutdown(); // Initiates an orderly shutdown, preventing new tasks from being submitted
+        try {
+            // Wait a finite time for ongoing tasks to terminate
+            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                // Force shutdown if tasks are still running after the waiting time
+                executor.shutdownNow();
+                log.warn("executor service did not terminate gracefully");
+            }
+        } catch (InterruptedException e) {
+            log.error("failed to wait for executor service termination", e);
+            executor.shutdownNow(); // Force shutdown again
+        }
     }
 }
