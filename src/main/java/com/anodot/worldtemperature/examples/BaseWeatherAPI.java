@@ -5,7 +5,7 @@ import com.anodot.worldtemperature.model.DailyTemp;
 
 import java.util.*;
 
-abstract class BaseWeatherAPI {
+public abstract class BaseWeatherAPI {
 
     protected Map<String, City> cityData = new HashMap<>();
     protected Set<String> cityIds = new HashSet<>();

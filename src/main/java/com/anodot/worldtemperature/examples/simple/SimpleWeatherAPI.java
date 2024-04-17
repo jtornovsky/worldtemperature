@@ -1,6 +1,7 @@
-package com.anodot.worldtemperature.examples;
+package com.anodot.worldtemperature.examples.simple;
 
 import com.anodot.worldtemperature.api.WeatherAPI;
+import com.anodot.worldtemperature.examples.BaseWeatherAPI;
 import com.anodot.worldtemperature.model.City;
 import com.anodot.worldtemperature.model.DailyTemp;
 
