@@ -32,7 +32,7 @@ public class CityTemperatureAnalyzer {
     private int populationThreshold;
     private int numberOfTopCities;
 
-    private final DecimalFormat df = new DecimalFormat("#.#");
+    private final DecimalFormat df = new DecimalFormat("#.###");
 
     public CityTemperatureAnalyzer(WeatherAPI weatherAPI) {
         this.weatherAPI = weatherAPI;
@@ -83,7 +83,9 @@ public class CityTemperatureAnalyzer {
     }
 
     /**
-     * Fetches temperature data for the given cities asynchronously.
+     * Fetches temperature data for the given cities asynchronously. It first attempts to retrieve
+     * cached temperature data from the LRUCache for each city. If the data is not found in the cache,
+     * asynchronous tasks are submitted to fetch the temperature data from the WeatherAPI for each city.
      *
      * @param cities The list of cities for which temperature data will be fetched.
      * @return A map containing the fetched temperature data for each city.
@@ -102,7 +104,7 @@ public class CityTemperatureAnalyzer {
             List<DailyTemp> cachedTemperatures = temperatureCache.get(cityId);
 
             if (cachedTemperatures != null) {
-                log.debug("The temperature data for city {} found in cache, not fetching it from outside.", city.getName());
+                log.debug("The temperature data for city {} found in cache, so not fetching it.", city.getName());
                 temperatureData.put(city, cachedTemperatures);
             } else {
                 // Submit asynchronous task to fetch temperatures from the API
@@ -111,6 +113,7 @@ public class CityTemperatureAnalyzer {
                     List<DailyTemp> temperatures = weatherAPI.getLastYearTemperature(city.getId());
                     // Cache the fetched temperature data
                     temperatureCache.put(cityId, temperatures);
+                    log.debug("The temperature data for city {} isn't in cache, fetching it.", city.getName());
                     // Create a map entry containing the city and its fetched temperature data
                     return Map.entry(city, temperatures);
                 });

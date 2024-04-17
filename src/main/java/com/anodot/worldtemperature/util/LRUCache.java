@@ -1,6 +1,7 @@
 package com.anodot.worldtemperature.util;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @param <K> The type of keys in the cache.
  * @param <V> The type of values in the cache.
  */
+@Slf4j
 public class LRUCache<K, V> {
 
     private final Map<K, CacheEntry<V>> cache;
@@ -45,8 +47,10 @@ public class LRUCache<K, V> {
         try {
             CacheEntry<V> entry = cache.get(key);
             if (entry != null && !entry.isExpired()) {
+                log.debug("returned cache with key {} -> value {}", key, entry.getValue());
                 return entry.getValue();
             } else {
+                log.debug("cached key removed due to expiration {}", key);
                 cache.remove(key);
                 return null;
             }
@@ -64,7 +68,9 @@ public class LRUCache<K, V> {
     public void put(K key, V value) {
         lock.lock(); // Acquire the lock
         try {
-            cache.put(key, new CacheEntry<>(value, ttlMillis));
+            CacheEntry cacheEntry = new CacheEntry<>(value, ttlMillis);
+            cache.put(key, cacheEntry);
+            log.debug("Cache populated with key {} -> value {}", key, cacheEntry.getValue());
         } finally {
             lock.unlock(); // Release the lock
         }
