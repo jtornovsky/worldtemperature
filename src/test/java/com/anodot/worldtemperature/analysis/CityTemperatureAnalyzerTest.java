@@ -1,19 +1,20 @@
 package com.anodot.worldtemperature.analysis;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import static org.mockito.Mockito.*;
-
-import java.util.*;
-
 import com.anodot.worldtemperature.aggregator.AverageTemperatureAggregator;
 import com.anodot.worldtemperature.aggregator.MaxTemperatureAggregator;
 import com.anodot.worldtemperature.aggregator.MedianTemperatureAggregator;
 import com.anodot.worldtemperature.api.WeatherAPI;
 import com.anodot.worldtemperature.model.City;
 import com.anodot.worldtemperature.model.DailyTemp;
-import org.junit.jupiter.api.*;
-import org.mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class CityTemperatureAnalyzerTest {
 
@@ -35,31 +36,31 @@ class CityTemperatureAnalyzerTest {
     @Test
     void testGetTopCitiesByAggregatedAverageTemperature() {
         CityTemperatureAnalyzer analyzer = new CityTemperatureAnalyzer(weatherAPI);
-        List<City> result = analyzer.getTopCitiesByAggregatedTemperature(cityIds, new AverageTemperatureAggregator());
+        List<Map.Entry<City, Double>> result = analyzer.getTopCitiesByAggregatedTemperature(cityIds, new AverageTemperatureAggregator());
         assertEquals(NUMBER_OF_TOP_CITIES, result.size());
-        assertEquals("CAI", result.get(0).getId()); // Highest average temperature
-        assertEquals("JKT", result.get(1).getId()); // Second-highest average temperature
-        assertEquals("BKK", result.get(2).getId()); // Third average temperature
+        assertEquals("CAI", result.get(0).getKey().getId()); // Highest average temperature
+        assertEquals("JKT", result.get(1).getKey().getId()); // Second-highest average temperature
+        assertEquals("BKK", result.get(2).getKey().getId()); // Third average temperature
     }
 
     @Test
     void testGetTopCitiesByAggregatedMaximalTemperature() {
         CityTemperatureAnalyzer analyzer = new CityTemperatureAnalyzer(weatherAPI);
-        List<City> result = analyzer.getTopCitiesByAggregatedTemperature(cityIds, new MaxTemperatureAggregator());
+        List<Map.Entry<City, Double>> result = analyzer.getTopCitiesByAggregatedTemperature(cityIds, new MaxTemperatureAggregator());
         assertEquals(NUMBER_OF_TOP_CITIES, result.size());
-        assertEquals("CAI", result.get(0).getId()); // Highest max temperature
-        assertEquals("JKT", result.get(1).getId()); // Second-highest max temperature
-        assertEquals("BKK", result.get(2).getId()); // Third max temperature
+        assertEquals("CAI", result.get(0).getKey().getId()); // Highest max temperature
+        assertEquals("JKT", result.get(1).getKey().getId()); // Second-highest max temperature
+        assertEquals("BKK", result.get(2).getKey().getId()); // Third max temperature
     }
 
     @Test
     void testGetTopCitiesByAggregatedMedianTemperature() {
         CityTemperatureAnalyzer analyzer = new CityTemperatureAnalyzer(weatherAPI);
-        List<City> result = analyzer.getTopCitiesByAggregatedTemperature(cityIds, new MedianTemperatureAggregator());
+        List<Map.Entry<City, Double>> result = analyzer.getTopCitiesByAggregatedTemperature(cityIds, new MedianTemperatureAggregator());
         assertEquals(NUMBER_OF_TOP_CITIES, result.size());
-        assertEquals("CAI", result.get(0).getId()); // Highest median temperature
-        assertEquals("JKT", result.get(1).getId()); // Second-highest median temperature
-        assertEquals("BKK", result.get(2).getId()); // Third median temperature
+        assertEquals("CAI", result.get(0).getKey().getId()); // Highest median temperature
+        assertEquals("JKT", result.get(1).getKey().getId()); // Second-highest median temperature
+        assertEquals("BKK", result.get(2).getKey().getId()); // Third median temperature
     }
 
     private void generateDataAndMockBehavior() {

@@ -1,20 +1,20 @@
 package com.anodot.worldtemperature;
 
-import com.anodot.worldtemperature.examples.bigdata.BigDataWeatherApiCalculator;
-import com.anodot.worldtemperature.examples.simple.SimpleWeatherApiCalculator;
-import com.anodot.worldtemperature.examples.smallcity.SmallCityWeatherApiCalculator;
+import com.anodot.worldtemperature.examples.bigdata.BigDataWeatherAnalyzerExample;
+import com.anodot.worldtemperature.examples.simple.SimpleDataWeatherAnalyzerExample;
+import com.anodot.worldtemperature.examples.smallcity.SmallCityWeatherAnalyzerExample;
 
 
 public class Main {
 
     public static void main(String[] args) {
 
-        final SimpleWeatherApiCalculator simpleWeatherApiCalculator = new SimpleWeatherApiCalculator();
-        final SmallCityWeatherApiCalculator smallCityWeatherApiCalculator = new SmallCityWeatherApiCalculator();
-        final BigDataWeatherApiCalculator bigDataWeatherApiCalculator = new BigDataWeatherApiCalculator();
+        final SimpleDataWeatherAnalyzerExample simpleWeatherApiCalculator = new SimpleDataWeatherAnalyzerExample();
+        final SmallCityWeatherAnalyzerExample smallCityWeatherApiCalculator = new SmallCityWeatherAnalyzerExample();
+        final BigDataWeatherAnalyzerExample bigDataWeatherApiCalculator = new BigDataWeatherAnalyzerExample();
 
-        simpleWeatherApiCalculator.simpleWeatherApiAllTempMetricsCalculator();
-        smallCityWeatherApiCalculator.smallCityWeatherApiAllTempMetricsCalculator();
-        bigDataWeatherApiCalculator.bigdataWeatherApiAllTempMetricsCalculator();
+        simpleWeatherApiCalculator.simpleDataWeatherApiAnalyzer();
+        smallCityWeatherApiCalculator.smallCityWeatherApiAnalyzer();
+        bigDataWeatherApiCalculator.bigDataWeatherAnalyzer();
     }
 }

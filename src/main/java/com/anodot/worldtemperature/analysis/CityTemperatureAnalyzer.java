@@ -16,7 +16,7 @@ import java.util.concurrent.*;
  * Analyzes temperature data for cities.
  */
 @Slf4j
-public class CityTemperatureAnalyzer {
+class CityTemperatureAnalyzer {
 
     private static final int THREAD_POOL_SIZE = 5;
     private static final int CACHE_SIZE = 10000;
@@ -45,7 +45,7 @@ public class CityTemperatureAnalyzer {
      * @param aggregator The temperature aggregator.
      * @return The list of top cities.
      */
-    public List<City> getTopCitiesByAggregatedTemperature(Set<String> cityIds, TemperatureAggregator aggregator) {
+    public List<Map.Entry<City, Double>> getTopCitiesByAggregatedTemperature(Set<String> cityIds, TemperatureAggregator aggregator) {
         List<City> filteredCities = filterCitiesByPopulation(cityIds);
         Map<City, List<DailyTemp>> temperatureData = fetchTemperatures(filteredCities);
         Map<City, Double> aggregatedTemperatures = aggregateTemperatures(temperatureData, aggregator);
@@ -186,7 +186,7 @@ public class CityTemperatureAnalyzer {
      * @param aggregatedTemperatures The map of cities to their aggregated temperatures.
      * @return The list of top cities.
      */
-    private List<City> getTopCities(Map<City, Double> aggregatedTemperatures) {
+    private List<Map.Entry<City, Double>> getTopCities(Map<City, Double> aggregatedTemperatures) {
 
         // Convert the map entries to a list for sorting
         List<Map.Entry<City, Double>> sortedCities = new ArrayList<>(aggregatedTemperatures.entrySet());
@@ -195,14 +195,14 @@ public class CityTemperatureAnalyzer {
         sortedCities.sort((c1, c2) -> Double.compare(c2.getValue(), c1.getValue()));
 
         // list to store the top cities
-        List<City> topCities = new ArrayList<>();
+        List<Map.Entry<City, Double>> topCities = new ArrayList<>();
 
         // Determine the number of cities to include in the top list
         int numCitiesToAdd = Math.min(numberOfTopCities, sortedCities.size());
 
         // Add the top cities to the list
         for (int i = 0; i < numCitiesToAdd; i++) {
-            topCities.add(sortedCities.get(i).getKey());
+            topCities.add(sortedCities.get(i));
         }
 
         // Return the list of top cities

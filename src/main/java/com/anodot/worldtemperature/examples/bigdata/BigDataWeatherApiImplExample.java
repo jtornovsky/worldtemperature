@@ -1,7 +1,6 @@
 package com.anodot.worldtemperature.examples.bigdata;
 
-import com.anodot.worldtemperature.api.WeatherAPI;
-import com.anodot.worldtemperature.examples.BaseWeatherAPI;
+import com.anodot.worldtemperature.examples.WeatherApiImplBaseExample;
 import com.anodot.worldtemperature.model.City;
 import com.anodot.worldtemperature.model.DailyTemp;
 
@@ -10,25 +9,15 @@ import java.util.*;
 import static com.anodot.worldtemperature.util.StringUtils.generateRandomString;
 
 /**
- * A big data implementation of the {@link WeatherAPI} interface, providing mock of big weather data.
+ * A big data implementation, providing mock of big weather data.
  * This implementation generates data for a set of predefined cities and their corresponding temperature records.
  */
-class BigDataWeatherAPI extends BaseWeatherAPI implements WeatherAPI {
+class BigDataWeatherApiImplExample extends WeatherApiImplBaseExample {
 
     private final Random random = new Random();
 
-    BigDataWeatherAPI() {
+    BigDataWeatherApiImplExample() {
         generateData();
-    }
-
-    @Override
-    public Set<City> getAllCitiesByIds(Set<String> cityIds) {
-        return super.getAllCitiesByIds(cityIds);
-    }
-
-    @Override
-    public List<DailyTemp> getLastYearTemperature(String cityId) {
-        return temperatureData.getOrDefault(cityId, Collections.emptyList());
     }
 
     public Set<String> getCityIds() {
@@ -48,11 +37,11 @@ class BigDataWeatherAPI extends BaseWeatherAPI implements WeatherAPI {
             String cityName = generateRandomString(10); // Generate random city name
             int population = random.nextInt(100000000) + 100000; // Generate random population
 
-            cityData.put(cityCode, new City(cityCode, cityName, population));
+            getCityData().put(cityCode, new City(cityCode, cityName, population));
         }
 
         // Generate random temperature data for each city for 'numOfTemperatures' days
-        for (String cityCode : cityData.keySet()) {
+        for (String cityCode : getCityData().keySet()) {
             List<DailyTemp> dailyTemps = new ArrayList<>();
             for (int i = 0; i < numOfTemperatures; i++) {
                 double minTemp = -10; // Adjust minimum temperature as needed
@@ -60,10 +49,10 @@ class BigDataWeatherAPI extends BaseWeatherAPI implements WeatherAPI {
                 double randomTemp = minTemp + (maxTemp - minTemp) * random.nextDouble();
                 dailyTemps.add(new DailyTemp(new Date(), randomTemp));
             }
-            temperatureData.put(cityCode, dailyTemps);
+            getDailyTempData().put(cityCode, dailyTemps);
         }
 
-        cityIds.addAll(cityData.keySet());
+        cityIds.addAll(getCityData().keySet());
     }
 }
 
